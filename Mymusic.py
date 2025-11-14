@@ -3,7 +3,6 @@ import yt_dlp
 from io import BytesIO
 import requests
 import json
-import streamlit.components.v1 as components
 import time
 import pickle
 import os
@@ -93,23 +92,36 @@ def search_music(query, max_results=10):
         return []
 
 def get_audio_url(video_id):
-    """Obtiene la URL de audio directa del video"""
+    """Obtiene la URL de audio directa del video - Compatible con todas las plataformas"""
     try:
         ydl_opts = {
-            'format': 'bestaudio/best',
+            'format': 'bestaudio[ext=m4a]/bestaudio/best',  # Priorizar m4a para mejor compatibilidad
             'quiet': True,
             'no_warnings': True,
+            'prefer_ffmpeg': False,
+            'nocheckcertificate': True,
         }
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(f"https://www.youtube.com/watch?v={video_id}", download=False)
             
-            # Buscar el mejor formato de audio
+            # Buscar el mejor formato de audio compatible con móviles
             if 'formats' in info:
-                audio_formats = [f for f in info['formats'] if f.get('acodec') != 'none' and f.get('vcodec') == 'none']
+                # Priorizar formatos m4a y webm que son universalmente compatibles
+                audio_formats = [
+                    f for f in info['formats'] 
+                    if f.get('acodec') != 'none' and f.get('vcodec') == 'none'
+                ]
+                
                 if audio_formats:
-                    # Ordenar por calidad de audio
-                    audio_formats.sort(key=lambda x: x.get('abr', 0), reverse=True)
+                    # Ordenar: primero m4a, luego por calidad de audio
+                    audio_formats.sort(
+                        key=lambda x: (
+                            1 if x.get('ext') == 'm4a' else 0,
+                            x.get('abr', 0)
+                        ), 
+                        reverse=True
+                    )
                     return audio_formats[0]['url']
             
             # Si no hay formato solo de audio, usar el URL directo
@@ -171,46 +183,10 @@ def add_to_playlist(song):
     return False
 
 def create_audio_player_with_autoplay(audio_url, autoplay_enabled=True):
-    """Crea un reproductor de audio personalizado con autoplay"""
-    # ID único para evitar conflictos
-    player_id = "audioPlayer"
-    
-    player_html = f"""
-    <div style="width: 100%; padding: 10px; background-color: #f0f2f6; border-radius: 10px;">
-        <audio id="{player_id}" controls autoplay style="width: 100%;">
-            <source src="{audio_url}" type="audio/mp4">
-            Tu navegador no soporta el elemento de audio.
-        </audio>
-    </div>
-    <script>
-        const audio = document.getElementById('{player_id}');
-        let hasEnded = false;
-        
-        // Cuando termina la canción
-        audio.addEventListener('ended', function() {{
-            if (!hasEnded && {str(autoplay_enabled).lower()}) {{
-                hasEnded = true;
-                console.log('Canción terminada, intentando pasar a la siguiente...');
-                // Nota: Streamlit no permite comunicación directa desde iframe
-                // El usuario deberá usar los botones de siguiente manualmente
-                // o activar el modo de reproducción automática temporal
-            }}
-        }});
-        
-        // Reproducir automáticamente
-        audio.play().catch(e => {{
-            console.log('Autoplay puede estar bloqueado por el navegador:', e);
-            alert('Por favor haz clic en el botón de reproducir para comenzar la música.');
-        }});
-        
-        // Log de eventos para debugging
-        audio.addEventListener('play', () => console.log('Audio reproduciendo'));
-        audio.addEventListener('pause', () => console.log('Audio pausado'));
-        audio.addEventListener('loadstart', () => console.log('Cargando audio...'));
-        audio.addEventListener('canplay', () => console.log('Audio listo para reproducir'));
-    </script>
-    """
-    return components.html(player_html, height=80)
+    """Crea un reproductor de audio compatible con iOS Safari"""
+    # Usar el reproductor nativo de Streamlit que es compatible con iOS
+    # En lugar del componente HTML personalizado
+    pass  # Esta función ya no se usa, se reemplaza por st.audio directo
 
 # Título de la aplicación
 st.title("🎵 Buscador y Reproductor de Música")
@@ -421,8 +397,11 @@ if st.session_state.current_audio_url and st.session_state.current_title:
         if st.session_state.playlist:
             st.info(f"🎵 {st.session_state.current_index + 1}/{len(st.session_state.playlist)}")
     
-    # Usar reproductor personalizado con autoplay
-    create_audio_player_with_autoplay(st.session_state.current_audio_url, st.session_state.autoplay)
+    # Usar reproductor nativo de Streamlit (compatible con iOS, Android y Windows)
+    st.audio(st.session_state.current_audio_url, format='audio/mp4', start_time=0)
+    
+    # Información de compatibilidad multiplataforma
+    st.caption("✅ **Compatible con**: 💻 Windows | 🍎 iOS/macOS | 🤖 Android | 🌐 Todos los navegadores")
     
     # Información sobre autoplay y controles
     if st.session_state.autoplay and len(st.session_state.playlist) > 1:

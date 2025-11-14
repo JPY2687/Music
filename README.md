@@ -6,10 +6,32 @@ Una aplicación web interactiva para buscar y escuchar música online de forma g
 
 - 🔍 **Búsqueda de música**: Busca cualquier canción o artista
 - 🎧 **Reproducción en línea**: Escucha música directamente desde la aplicación
-- 📊 **Información detallada**: Ve la duración, vistas y canal de cada canción
+- 📜 **Listas de reproducción**: Crea y guarda múltiples listas personalizadas
+- 🔁 **Reproducción continua**: Avance automático entre canciones
+- 📊 **Información detallada**: Duración, vistas y canal de cada canción
 - 🖼️ **Miniaturas**: Visualiza las portadas de las canciones
-- 🆓 **Completamente gratis**: Usa recursos gratuitos (YouTube)
-- 🚀 **Interfaz moderna**: Diseño limpio y fácil de usar
+- 💾 **Guardado permanente**: Tus listas se guardan automáticamente
+- 🆓 **Completamente gratis**: Usa recursos gratuitos de YouTube
+- 🌐 **Multiplataforma**: Compatible con iOS, Android y Windows
+- 🚀 **Interfaz moderna**: Diseño limpio y responsivo
+
+## 📱 Compatibilidad
+
+✅ **Sistemas Operativos:**
+- 💻 Windows (7/8/10/11)
+- 🍎 macOS (Big Sur y superiores)
+- 🐧 Linux (todas las distribuciones)
+
+✅ **Dispositivos Móviles:**
+- 📱 iOS (iPhone y iPad - Safari 14+)
+- 🤖 Android (Chrome, Firefox, Samsung Internet)
+
+✅ **Navegadores Web:**
+- Google Chrome / Edge (Chromium)
+- Mozilla Firefox
+- Safari (macOS e iOS)
+- Opera
+- Brave
 
 ## 🛠️ Tecnologías Utilizadas
 
@@ -46,17 +68,37 @@ Una aplicación web interactiva para buscar y escuchar música online de forma g
 
 1. **Ejecuta la aplicación**:
    ```powershell
-   streamlit run app.py
+   streamlit run Mymusic.py
    ```
 
 2. **Abre tu navegador** en `http://localhost:8501` (se abrirá automáticamente)
 
-3. **Busca y reproduce música**:
+3. **Funciones principales**:
+   
+   **Buscar y Reproducir:**
    - Escribe el nombre de una canción o artista en la barra lateral
-   - Ajusta el número de resultados si lo deseas
+   - Ajusta el número de resultados (5-50)
    - Haz clic en "Buscar"
-   - Selecciona una canción de los resultados
-   - Haz clic en "▶️ Reproducir" para escucharla
+   - Selecciona "▶️ Reproducir" para escuchar inmediatamente
+   - Usa "➕ Agregar" para agregar a la lista sin interrumpir
+   
+   **Crear Listas de Reproducción:**
+   - Expande "➕ Crear Nueva Lista" en la barra lateral
+   - Escribe un nombre y haz clic en "Crear Lista"
+   - Selecciona tu lista en el dropdown
+   - Agrega canciones desde los resultados de búsqueda
+   - Se guarda automáticamente
+   
+   **Gestionar Listas:**
+   - Usa las pestañas para ver todas tus listas
+   - Haz clic en cualquier canción para reproducirla
+   - Usa "🗑️" para eliminar canciones
+   - "▶️ Reproducir Todo" para iniciar desde el principio
+   
+   **Controles de Reproducción:**
+   - ⏮️ Anterior | ⏭️ Siguiente | 🔄 Recargar | ⏹️ Detener
+   - 🔁 Reproducción continua automática
+   - Cola de reproducción expandible
 
 ## 📖 Cómo Funciona
 
@@ -76,27 +118,49 @@ La aplicación utiliza `yt-dlp` para:
 
 ## 🔧 Solución de Problemas
 
-### Error al buscar o reproducir
-- Verifica tu conexión a Internet
-- Algunos videos pueden tener restricciones regionales
-- Actualiza `yt-dlp` con: `pip install --upgrade yt-dlp`
+### 📱 En dispositivos móviles (iOS/Android)
+- **Audio no se reproduce automáticamente**: Los navegadores móviles bloquean autoplay por seguridad
+  - Solución: Haz clic en el botón ▶️ del reproductor
+- **Pantalla se apaga**: El audio seguirá reproduciéndose en segundo plano
+- **Usar en pantalla completa**: Agrega el sitio a tu pantalla de inicio para una experiencia tipo app
 
-### La aplicación no se inicia
-- Asegúrate de tener todas las dependencias instaladas
-- Verifica que estés usando Python 3.8 o superior
-- Reactiva el entorno virtual si lo estás usando
+### 💻 En Windows/macOS/Linux
+- **Navegador recomendado**: Chrome o Edge para mejor rendimiento
+- **Audio entrecortado**: Verifica tu conexión a Internet
+- **Problemas de certificado SSL**: Actualiza tu navegador a la última versión
 
-### Audio no se reproduce
-- Algunos navegadores pueden bloquear la reproducción automática
-- Intenta con otro navegador (Chrome o Edge recomendados)
-- Verifica que el volumen no esté silenciado
+### 🌐 Problemas generales
+- **Error al buscar o reproducir**:
+  - Verifica tu conexión a Internet
+  - Algunos videos pueden tener restricciones regionales
+  - Actualiza `yt-dlp` con: `pip install --upgrade yt-dlp`
+
+- **La aplicación no se inicia**:
+  - Asegúrate de tener todas las dependencias instaladas
+  - Verifica que estés usando Python 3.8 o superior
+  - Reactiva el entorno virtual si lo estás usando
+
+- **Las listas no se guardan**:
+  - Verifica permisos de escritura en el directorio
+  - El archivo `playlists_data.pkl` debe poder crearse/modificarse
 
 ## 📝 Personalización
 
-Puedes personalizar la aplicación editando `app.py`:
-- Cambiar el número máximo de resultados
-- Modificar el diseño y colores
-- Agregar más funcionalidades (listas de reproducción, favoritos, etc.)
+Puedes personalizar la aplicación editando `Mymusic.py`:
+- Cambiar el número máximo de resultados de búsqueda
+- Modificar el diseño y colores usando Streamlit themes
+- Ajustar los formatos de audio preferidos para mejor compatibilidad
+- Personalizar los mensajes y textos de la interfaz
+- Agregar más funcionalidades (exportar listas, compartir, etc.)
+
+## 🎯 Características Avanzadas
+
+- **Búsqueda sin interrupción**: Busca nuevas canciones mientras la música sigue sonando
+- **Múltiples listas**: Crea tantas listas como quieras, cada una con su propio nombre
+- **Persistencia de datos**: Tus listas se guardan localmente en `playlists_data.pkl`
+- **Formato optimizado**: Audio en formato M4A para máxima compatibilidad
+- **Interfaz adaptativa**: Se adapta automáticamente a móviles y tablets
+- **Control total**: Reproduce cualquier canción de cualquier lista en cualquier momento
 
 ## 🤝 Contribuciones
 

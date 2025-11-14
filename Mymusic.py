@@ -6,6 +6,7 @@ import json
 import time
 import pickle
 import os
+import base64
 
 # Configuración de la página
 st.set_page_config(
@@ -187,6 +188,21 @@ def create_audio_player_with_autoplay(audio_url, autoplay_enabled=True):
     # Usar el reproductor nativo de Streamlit que es compatible con iOS
     # En lugar del componente HTML personalizado
     pass  # Esta función ya no se usa, se reemplaza por st.audio directo
+
+def download_mp3(video_id, title):
+    """Descarga el audio en mp3 y lo retorna como bytes"""
+    try:
+        backend_url = "https://music-ds9z.onrender.com/download"
+        params = {"video_id": video_id}
+        response = requests.get(backend_url, params=params)
+        if response.status_code == 200:
+            return response.content
+        else:
+            st.error(f"Error del backend: {response.text}")
+            return None
+    except Exception as e:
+        st.error(f"Error al descargar mp3 desde backend: {str(e)}")
+        return None
 
 # Título de la aplicación
 st.title("🎵 Buscador y Reproductor de Música")
@@ -438,6 +454,22 @@ if st.session_state.current_audio_url and st.session_state.current_title:
             st.session_state.current_title = None
             st.session_state.start_time = None
             st.rerun()
+    
+    # Botón de descarga de la canción actual en mp3
+    if st.session_state.current_audio_url and st.session_state.current_title:
+        if st.button("⬇️ Descargar MP3", key="download_mp3_btn"):
+            with st.spinner("Solicitando mp3 al servidor..."):
+                mp3_bytes = download_mp3(
+                    st.session_state.playlist[st.session_state.current_index]['id'],
+                    st.session_state.current_title.replace(' ', '_')[:40]
+                )
+                if mp3_bytes:
+                    st.download_button(
+                        label="Descargar archivo MP3",
+                        data=mp3_bytes,
+                        file_name=f"{st.session_state.current_title[:40]}.mp3",
+                        mime="audio/mpeg"
+                    )
     
     # Mostrar cola de reproducción actual
     if st.session_state.playlist and len(st.session_state.playlist) > 0:

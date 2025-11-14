@@ -20,10 +20,14 @@ def download():
             'preferredcodec': 'mp3',
             'preferredquality': '192',
         }],
-            'ffmpeg_location': 'ffmpeg',
+        'ffmpeg_location': 'ffmpeg',
         'quiet': True,
         'noplaylist': True,
     }
+    # Usar cookies.txt si existe
+    cookies_path = os.path.join(os.path.dirname(__file__), 'cookies.txt')
+    if os.path.exists(cookies_path):
+        ydl_opts['cookiefile'] = cookies_path
     url = f'https://www.youtube.com/watch?v={video_id}'
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:

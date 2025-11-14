@@ -455,21 +455,23 @@ if st.session_state.current_audio_url and st.session_state.current_title:
             st.session_state.start_time = None
             st.rerun()
     
-    # Botón de descarga de la canción actual en mp3
-    if st.session_state.current_audio_url and st.session_state.current_title:
-        if st.button("⬇️ Descargar MP3", key="download_mp3_btn"):
-            with st.spinner("Solicitando mp3 al servidor..."):
-                mp3_bytes = download_mp3(
-                    st.session_state.playlist[st.session_state.current_index]['id'],
-                    st.session_state.current_title.replace(' ', '_')[:40]
-                )
-                if mp3_bytes:
-                    st.download_button(
-                        label="Descargar archivo MP3",
-                        data=mp3_bytes,
-                        file_name=f"{st.session_state.current_title[:40]}.mp3",
-                        mime="audio/mpeg"
+        # Botón de descarga de la canción actual en mp3
+        if st.session_state.current_audio_url and st.session_state.current_title:
+            st.markdown("---")
+            st.subheader("Descargar esta canción en MP3")
+            if st.button("⬇️ Descargar MP3", key="download_mp3_btn"):
+                with st.spinner("Solicitando mp3 al servidor..."):
+                    mp3_bytes = download_mp3(
+                        st.session_state.playlist[st.session_state.current_index]['id'],
+                        st.session_state.current_title.replace(' ', '_')[:40]
                     )
+                    if mp3_bytes:
+                        st.download_button(
+                            label="Descargar archivo MP3",
+                            data=mp3_bytes,
+                            file_name=f"{st.session_state.current_title[:40]}.mp3",
+                            mime="audio/mpeg"
+                        )
     
     # Mostrar cola de reproducción actual
     if st.session_state.playlist and len(st.session_state.playlist) > 0:

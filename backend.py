@@ -20,7 +20,7 @@ def download():
             'preferredcodec': 'mp3',
             'preferredquality': '192',
         }],
-        'ffmpeg_location': r'c:\Users\OLMEDOJorge\Documents\Python projects\Music\ffmpeg\bin\ffmpeg.exe',
+            'ffmpeg_location': 'ffmpeg',
         'quiet': True,
         'noplaylist': True,
     }
